@@ -1,0 +1,22 @@
+name: "CD"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy container
+        uses: OpenSourcePolitics/deploy-container-action@master
+        with:
+          registry: ${{ vars.REGISTRY_URL }}
+          namespace: ${{ vars.REGISTRY_NAMESPACE }}
+          password: ${{ secrets.TOKEN }}
+          access_key: ${{ secrets.ACCESS_TOKEN }}
+          image_name: ${{ vars.REGISTRY_IMAGE_NAME }}
+          tag: latest
+          container_name: ${{ vars.CONTAINER_NAME }}
+          project_id: ${{ secrets.SCALEWAY_PROJECT_ID }}
