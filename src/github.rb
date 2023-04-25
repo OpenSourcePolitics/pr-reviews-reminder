@@ -1,8 +1,9 @@
 require "octokit"
+require "parallel"
 
 class Github
   def initialize
-    @client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
+    @client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])#.tap { |client| client.auto_paginate = true }
   end
 
   def repositories
@@ -15,8 +16,8 @@ class Github
   end
 
   def unanswered_pull_requests
-    @unanswered_repositories ||= @repositories.map do |repo|
-      @client.pull_requests(repo.full_name, state: "open").map do |pull_request|
+    @unanswered_repositories ||= Parallel.map(@repositories, in_threads: 4) do |repo|
+      Parallel.map(@client.pull_requests(repo.full_name, state: "open"), in_threads: 8) do |pull_request|
         {
           repository: repo.full_name,
           pull_request: pull_request.number,
@@ -26,7 +27,7 @@ class Github
           pending_reviewers: pending_reviewers(repo, pull_request)
         }
       end
-    end.flatten.compact.reject{ |pull_request| pull_request[:pending_reviewers].empty? }
+    end.flatten.compact.reject { |pull_request| pull_request[:pending_reviewers].empty? }
   end
 
   def organization

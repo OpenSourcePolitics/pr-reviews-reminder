@@ -3,10 +3,7 @@ require_relative 'name_helper'
 
 module Message
   def self.post(pull_request, reviewer)
-
     recipient = NameHelper.find(reviewer).rocket_name
-    puts "Posting message to @#{recipient} for #{pull_request[:title]}"
-
     title = "A request is waiting for your review @#{recipient}"
     attachment = {
       title: pull_request[:title],
@@ -18,6 +15,8 @@ module Message
     return if client.nil?
 
     client.chat.post_message(channel: ENV["ROCKET_CHANNEL"], text: title, attachments: [attachment], alias: "Github Reviewer Reminder", emoji: ":robot_face:")
+
+    { pull_request: pull_request, reviewer: reviewer, recipient: recipient, title: title, attachment: attachment }
   end
 
   def self.client
