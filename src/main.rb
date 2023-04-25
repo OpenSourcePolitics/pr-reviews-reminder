@@ -1,11 +1,12 @@
 require_relative "github"
 require_relative 'name_helper'
 require_relative 'message'
+require_relative 'request_helper'
 require 'sinatra'
 require "parallel"
 
-get '/' do
-  return { status: 401, message: "Unauthorized" }.to_json unless params[:token] == ENV["API_TOKEN"]
+post '/' do
+  return { status: 401, message: "Unauthorized" }.to_json unless RequestHelper.search_body_for(request, "token") == ENV["API_TOKEN"]
   start_time = Time.now
   logger.info "Starting scan"
 
