@@ -3,7 +3,7 @@ require "parallel"
 
 class Github
   def initialize
-    @client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])#.tap { |client| client.auto_paginate = true }
+    @client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN']).tap { |client| client.auto_paginate = true }
   end
 
   def repositories
