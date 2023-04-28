@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# This is a helper class to translate github names to rocket chat names.
 class NameHelper
   attr_reader :github_name, :rocket_name
 
@@ -6,7 +9,7 @@ class NameHelper
   end
 
   def self.github_to_rocket_chat
-    @github_to_rocket_chat ||= EnvironmentHelper.for(:names_map).split(",").map { |name| new(*name.split(":")) }
+    @github_to_rocket_chat ||= EnvironmentHelper.for(:names_map).split(',').map { |name| new(*name.split(':')) }
   end
 
   def initialize(github_name, rocket_name)

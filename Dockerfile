@@ -4,8 +4,7 @@ ENV APP_ENV=production \
     PORT=8080
 
 COPY Gemfile Gemfile.lock ./
-
-RUN bundle install
+RUN bundle config set without 'test development' && bundle install
 
 COPY . .
 
