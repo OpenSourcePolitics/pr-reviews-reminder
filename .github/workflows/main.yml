@@ -1,13 +1,28 @@
 name: "CD"
 
-on:
-  push:
-    branches:
-      - master
+on: "push"
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Rubocop
+        uses: OpenSourcePolitics/lint-action@master
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Run RSpec
+        run: bundle exec rspec
   deploy:
     runs-on: ubuntu-latest
+    if: "github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'"
+    needs: [lint, tests]
     steps:
       - name: Deploy container
         uses: OpenSourcePolitics/deploy-container-action@master
