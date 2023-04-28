@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 # This is a helper class for the incoming request.
 module RequestHelper
   # Search the body of the request for a given key.
@@ -11,7 +13,7 @@ module RequestHelper
     JSON.parse(request.body.read)
   end
 
-  def self.authorized?
+  def self.authorized?(request)
     search_body_for(request, 'token') == EnvironmentHelper.for(:api_token)
   end
 end

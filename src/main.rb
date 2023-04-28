@@ -13,7 +13,7 @@ post '/' do
     return { status: 500,
              message: "Missing configuration #{EnvironmentHelper.missing_configuration.join(', ')}" }.to_json
   end
-  return { status: 401, message: 'Unauthorized' }.to_json unless RequestHelper.authorized?
+  return { status: 401, message: 'Unauthorized' }.to_json unless RequestHelper.authorized?(request)
 
   start_time = Time.now
   logger.info 'Starting scan'
