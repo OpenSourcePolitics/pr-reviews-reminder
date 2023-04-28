@@ -3,7 +3,7 @@ require "parallel"
 
 class Github
   def initialize
-    @client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN']).tap { |client| client.auto_paginate = true }
+    @client = Octokit::Client.new(access_token: EnvironmentHelper.for(:github_access_token)).tap { |client| client.auto_paginate = true }
   end
 
   def repositories
@@ -31,7 +31,7 @@ class Github
   end
 
   def organization
-    @client.list_organizations.select { |org| org.login == ENV["ORGANIZATION"] }.first
+    @client.list_organizations.select { |org| org.login == EnvironmentHelper.for(:organization) }.first
   end
 
   def pending_reviewers(repo, pull_request)

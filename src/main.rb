@@ -2,11 +2,13 @@ require_relative "github"
 require_relative 'name_helper'
 require_relative 'message'
 require_relative 'request_helper'
+require_relative 'environment_helper'
 require 'sinatra'
 require "parallel"
 
 post '/' do
-  return { status: 401, message: "Unauthorized" }.to_json unless RequestHelper.search_body_for(request, "token") == ENV["API_TOKEN"]
+  return { status: 500, message: "Missing configuration #{EnvironmentHelper.missing_configuration.join(", ")}"}.to_json unless EnvironmentHelper.working_configuration?
+  return { status: 401, message: "Unauthorized" }.to_json unless RequestHelper.search_body_for(request, "token") == EnvironmentHelper.for(:api_token)
   start_time = Time.now
   logger.info "Starting scan"
 
