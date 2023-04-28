@@ -21,9 +21,9 @@ class Github
   end
 
   def unanswered_pull_requests
-    @unanswered_pull_requests ||= unanswered_pull_requests.flatten
-                                                          .compact
-                                                          .reject do |pull_request|
+    @unanswered_pull_requests ||= all_unanswered_pull_requests.flatten
+                                                              .compact
+                                                              .reject do |pull_request|
       pull_request[:pending_reviewers].empty?
     end
   end
